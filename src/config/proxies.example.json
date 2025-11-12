@@ -1,0 +1,4 @@
+{
+  "http": "http://username:password@host:port",
+  "https": "http://username:password@host:port"
+}
