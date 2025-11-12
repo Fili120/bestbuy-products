@@ -1,0 +1,36 @@
+ua = settings.get(
+        "userAgent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    )
+    proxies_path = settings.get("proxiesFile")
+    proxies = load_proxies(proxies_path)
+    country = settings.get("country", "US")
+
+    client = HttpClient(default_headers={"User-Agent": ua, "Accept-Language": "en-US,en;q=0.9"}, proxies=proxies)
+    paginator = BestBuyPaginator(client=client, category_url=category_url, country=country)
+
+    ensure_parent_dir(output_path)
+    writer = JsonlWriter(output_path)
+
+    scraped = 0
+    max_products = args.max if args.max is not None else int(settings.get("maxProducts", 100))
+
+    logging.info("Starting crawl: %s", category_url)
+    for product_url in iter_product_urls(paginator, max_products=max_products):
+        try:
+            html = client.get(product_url).text
+            raw = parse_product_from_html(html, url=product_url)
+            doc = normalize_product(raw)
+            writer.write(doc)
+            scraped += 1
+            logging.info("Scraped %d → %s", scraped, doc.get("sku") or product_url)
+        except Exception as e:
+            logging.exception("Failed to process %s: %s", product_url, e)
+        time.sleep(delay_s)
+
+    writer.close()
+    logging.info("Done. Wrote %d products to %s", scraped, output_path)
+
+if __name__ == "__main__":
+    main()
