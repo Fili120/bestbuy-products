@@ -1,0 +1,9 @@
+{
+  "categoryUrl": "https://www.bestbuy.com/site/mobile-cell-phones/all-unlocked-cell-phones/pcmcat311200050005.c?id=pcmcat311200050005",
+  "maxProducts": 50,
+  "outputPath": "data/out/bestbuy_products.jsonl",
+  "delayMs": 600,
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "proxiesFile": "src/config/proxies.example.json",
+  "country": "US"
+}
